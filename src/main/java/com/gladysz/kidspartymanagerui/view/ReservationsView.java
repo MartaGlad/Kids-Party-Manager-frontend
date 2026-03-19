@@ -1,25 +1,23 @@
 package com.gladysz.kidspartymanagerui.view;
 
 import com.gladysz.kidspartymanagerui.view.layout.MainLayout;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+@PageTitle("Reservations")
+@Route(layout = MainLayout.class)
+public class ReservationsView extends VerticalLayout {
 
-@PageTitle("Kids Party Manager")
-@Route(value = "", layout = MainLayout.class)
-public class DashboardView extends VerticalLayout {
+    public ReservationsView() {
 
-    private final Span welcome  = new Span("Welcome to Kids Party Manager!");
-
-    public DashboardView() {
-
-        welcome.getStyle()
+        H1 title = new H1("List of reservations");
+        title.getStyle()
                 .set("text-align", "center")
                 .set("font-size", "30px")
                 .set("font-weight", "bold");
 
-        add(welcome);
+        add(title);
     }
 }
