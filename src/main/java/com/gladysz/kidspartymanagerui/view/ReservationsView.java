@@ -38,7 +38,7 @@ public class ReservationsView extends VerticalLayout {
 
     public ReservationsView(ReservationService reservationService) {
 
-        allReservations = reservationService.getExampleReservations();
+        allReservations = reservationService.getReservations();
 
         frameHeader();
         frameControlPanel();
