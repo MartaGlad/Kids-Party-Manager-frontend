@@ -16,29 +16,25 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
 import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 
 @PageTitle("Reservations")
 @Route(layout = MainLayout.class)
 public class ReservationsView extends VerticalLayout {
 
-    private final List<ReservationListItemDto> allReservations;
     private Grid<ReservationListItemDto> grid;
     private ComboBox<Status> statusFilter;
     private DatePicker fromFilter;
     private DatePicker toFilter;
-
+    private final ReservationService reservationService;
 
     public ReservationsView(ReservationService reservationService) {
 
-        allReservations = reservationService.getReservations();
+        this.reservationService = reservationService;
 
         frameHeader();
         frameControlPanel();
@@ -77,13 +73,15 @@ public class ReservationsView extends VerticalLayout {
         fromFilter = new DatePicker("From date");
         toFilter = new DatePicker("To date");
 
-        Button searchButton = new Button("Search", e -> applyFilters());
+        Button searchButton = new Button("Search", e ->
+                grid.setItems(reservationService.getReservations(
+                        statusFilter.getValue(), fromFilter.getValue(), toFilter.getValue())));
 
         Button clearButton = new Button("Clear", e -> {
             statusFilter.clear();
             fromFilter.clear();
             toFilter.clear();
-            grid.setItems(allReservations);
+            grid.setItems(reservationService.getReservations(null, null, null));
         });
 
         panel.add(statusFilter, fromFilter, toFilter, searchButton, clearButton);
@@ -119,46 +117,13 @@ public class ReservationsView extends VerticalLayout {
                 currencyFormatter.format(item.getPrice()))
                 .setHeader("Price");
 
-        grid.setItems(allReservations);
+        grid.setItems(reservationService.getReservations(null, null, null));
         grid.setAllRowsVisible(true);
         grid.setEmptyStateText("No reservations found.");
 
         mainContent.add(grid);
 
         add(mainContent);
-    }
-
-
-    private void applyFilters() {
-        List<ReservationListItemDto> filterResult = new ArrayList<>(allReservations);
-
-        if (statusFilter.getValue() != null) {
-            filterResult = filterResult.stream()
-                    .filter(reservation -> reservation.getStatus().equals(statusFilter.getValue()))
-                    .collect(Collectors.toList());
-        }
-
-        if (fromFilter.getValue() != null) {
-            filterResult = filterResult.stream()
-                    .filter(reservation -> {
-                        LocalDate reservationDate = reservation.getEventDateTime().toLocalDate();
-
-                        return !reservationDate.isBefore(fromFilter.getValue());
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        if (toFilter.getValue() != null) {
-            filterResult = filterResult.stream()
-                    .filter (reservation -> {
-
-                        LocalDate reservationDate = reservation.getEventDateTime().toLocalDate();
-
-                        return !reservationDate.isAfter(toFilter.getValue());
-                    })
-                    .collect(Collectors.toList());
-        }
-        grid.setItems(filterResult);
     }
 }
 

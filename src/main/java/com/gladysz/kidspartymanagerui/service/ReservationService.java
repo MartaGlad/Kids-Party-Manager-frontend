@@ -3,9 +3,11 @@ package com.gladysz.kidspartymanagerui.service;
 import com.gladysz.kidspartymanagerui.client.ReservationClient;
 import com.gladysz.kidspartymanagerui.dto.ReservationListItemDto;
 import com.gladysz.kidspartymanagerui.dto.ReservationResponseDto;
+import com.gladysz.kidspartymanagerui.dto.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -17,10 +19,9 @@ public class ReservationService {
 
     private final ReservationClient reservationClient;
 
-    public List<ReservationListItemDto> getReservations() {
+    public List<ReservationListItemDto> getReservations(Status status, LocalDate from, LocalDate to) {
 
-        List<ReservationResponseDto> response = reservationClient
-                .getReservations(null, null, null);
+        List<ReservationResponseDto> response = reservationClient.getReservations(status, from, to);
 
         List<ReservationListItemDto> resultList = new ArrayList<>();
 
