@@ -1,6 +1,6 @@
 package com.gladysz.kidspartymanagerui.view;
 
-import com.gladysz.kidspartymanagerui.dto.ReservationListItemDto;
+import com.gladysz.kidspartymanagerui.dto.ReservationSummaryDto;
 import com.gladysz.kidspartymanagerui.dto.Status;
 import com.gladysz.kidspartymanagerui.service.ReservationService;
 import com.gladysz.kidspartymanagerui.view.layout.MainLayout;
@@ -26,7 +26,7 @@ import java.util.Locale;
 @Route(layout = MainLayout.class)
 public class ReservationsView extends VerticalLayout {
 
-    private Grid<ReservationListItemDto> grid;
+    private Grid<ReservationSummaryDto> grid;
     private ComboBox<Status> statusFilter;
     private DatePicker fromFilter;
     private DatePicker toFilter;
@@ -96,25 +96,25 @@ public class ReservationsView extends VerticalLayout {
         Div mainContent = new Div();
         mainContent.setSizeFull();
 
-        grid = new Grid<>(ReservationListItemDto.class, false);
+        grid = new Grid<>(ReservationSummaryDto.class, false);
 
-        grid.addColumn(ReservationListItemDto::getId).setHeader("Reservation ID");
-        grid.addColumn(ReservationListItemDto::getEventPackageName).setHeader("Event package");
-        grid.addColumn(ReservationListItemDto::getAnimatorName).setHeader("Animator name");
+        grid.addColumn(ReservationSummaryDto::id).setHeader("Reservation ID");
+        grid.addColumn(ReservationSummaryDto::eventPackageName).setHeader("Event package");
+        grid.addColumn(ReservationSummaryDto::animatorName).setHeader("Animator name");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
         grid.addColumn(item ->
-                item.getEventDateTime().format(formatter))
+                item.eventDateTime().format(formatter))
                 .setHeader("Event date");
 
-        grid.addColumn(ReservationListItemDto::getChildrenCount).setHeader("Children count");
-        grid.addColumn(ReservationListItemDto::getStatus).setHeader("Status");
+        grid.addColumn(ReservationSummaryDto::childrenCount).setHeader("Children count");
+        grid.addColumn(ReservationSummaryDto::status).setHeader("Status");
 
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pl","PL"));
 
         grid.addColumn(item ->
-                currencyFormatter.format(item.getPrice()))
+                currencyFormatter.format(item.price()))
                 .setHeader("Price");
 
         grid.setItems(reservationService.getReservations(null, null, null));
