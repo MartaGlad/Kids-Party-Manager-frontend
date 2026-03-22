@@ -23,7 +23,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import java.text.NumberFormat;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -151,12 +154,18 @@ public class ReservationsView extends VerticalLayout {
 
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Add reservation");
+        dialog.setDraggable(true);
 
         IntegerField childrenCountField = new IntegerField("Children count");
         IntegerField birthdayChildAgeField = new IntegerField("Birthday child age");
 
         DatePicker eventDateField = new DatePicker("Event date");
+        eventDateField.setMin(LocalDate.now());
+
         TimePicker eventTimeField = new TimePicker("Event time");
+        eventTimeField.setMin(LocalTime.of(8,0));
+        eventTimeField.setMax(LocalTime.of(22,0));
+        eventTimeField.setStep(Duration.ofMinutes(30));
 
         ComboBox<EventPackageResponseDto> packageComboBox = new ComboBox<>("Event package");
         packageComboBox.setItems(eventPackageService.getEventPackages());
@@ -246,8 +255,18 @@ public class ReservationsView extends VerticalLayout {
             return false;
         }
 
+        if (childrenCountField.getValue() <= 0) {
+            Notification.show("Children count must be greater than 0.");
+            return false;
+        }
+
         if (birthdayChildAgeField.getValue() == null) {
             Notification.show("Please enter birthday child age.");
+            return false;
+        }
+
+        if (birthdayChildAgeField.getValue() <= 0) {
+            Notification.show("Birthday child age must be greater than 0.");
             return false;
         }
 
