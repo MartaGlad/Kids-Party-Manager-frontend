@@ -29,6 +29,8 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.notification.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @PageTitle("Reservations")
 @Route(layout = MainLayout.class)
@@ -42,6 +44,7 @@ public class ReservationsView extends VerticalLayout {
     private final EventPackageService eventPackageService;
     private final AnimatorService animatorService;
     private final OrdererService ordererService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReservationsView.class);
 
     public ReservationsView(ReservationService reservationService,
                             EventPackageService eventPackageService,
@@ -184,19 +187,22 @@ public class ReservationsView extends VerticalLayout {
                     packageComboBox, animatorComboBox, ordererComboBox)) {
                 return;
             }
+            try {
+                LocalDateTime eventDateTime = LocalDateTime.of(eventDateField.getValue(), eventTimeField.getValue());
 
-            LocalDateTime eventDateTime = LocalDateTime.of(eventDateField.getValue(), eventTimeField.getValue());
+                reservationService.createReservation(new ReservationCreateDto(
+                        packageComboBox.getValue().id(), animatorComboBox.getValue().id(),
+                        ordererComboBox.getValue().id(), eventDateTime,
+                        childrenCountField.getValue(), birthdayChildAgeField.getValue()));
 
-            reservationService.createReservation(new ReservationCreateDto(
-                    packageComboBox.getValue().id(), animatorComboBox.getValue().id(),
-                    ordererComboBox.getValue().id(), eventDateTime,
-                    childrenCountField.getValue(), birthdayChildAgeField.getValue()));
+                Notification.show("Reservation created");
+                dialog.close();
+                refreshGrid();
 
-            Notification.show("Reservation created");
-
-            dialog.close();
-
-            refreshGrid();
+            } catch (Exception e) {
+                Notification.show("Could not create reservation.");
+                LOGGER.error("Could not create reservation ", e);
+            }
         }
         );
 
