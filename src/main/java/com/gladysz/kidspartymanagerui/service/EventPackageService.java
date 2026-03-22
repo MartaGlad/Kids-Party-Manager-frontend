@@ -13,8 +13,8 @@ public class EventPackageService {
 
     private final EventPackageClient eventPackageClient;
 
-    public List<EventPackageResponseDto> getEventPackages() {
+    public List<EventPackageResponseDto> getAllEventPackages() {
 
-        return eventPackageClient.getEventPackages();
+        return eventPackageClient.getAllEventPackages();
     }
 }

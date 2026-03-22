@@ -134,7 +134,8 @@ public class ReservationsView extends VerticalLayout {
         grid.addColumn(ReservationSummaryDto::childrenCount).setHeader("Children count");
         grid.addColumn(ReservationSummaryDto::status).setHeader("Status");
 
-        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("pl","PL"));
+        NumberFormat currencyFormatter = NumberFormat
+                .getCurrencyInstance(Locale.of("pl","PL"));
 
         grid.addColumn(item ->
                 currencyFormatter.format(item.price()))
@@ -168,7 +169,7 @@ public class ReservationsView extends VerticalLayout {
         eventTimeField.setStep(Duration.ofMinutes(30));
 
         ComboBox<EventPackageResponseDto> packageComboBox = new ComboBox<>("Event package");
-        packageComboBox.setItems(eventPackageService.getEventPackages());
+        packageComboBox.setItems(eventPackageService.getAllEventPackages());
         packageComboBox.setItemLabelGenerator(EventPackageResponseDto::name);
 
         ComboBox<AnimatorResponseDto> animatorComboBox = new ComboBox<>("Animator");
@@ -224,7 +225,13 @@ public class ReservationsView extends VerticalLayout {
 
 
     private void refreshGrid() {
-        grid.setItems(reservationService.getReservations(null, null, null));
+
+        try {
+            grid.setItems(reservationService.getReservations(null, null, null));
+        } catch (Exception e){
+            Notification.show("Could not load reservations from backend.");
+            LOGGER.error("Could not load reservations ", e);
+        }
     }
 
 

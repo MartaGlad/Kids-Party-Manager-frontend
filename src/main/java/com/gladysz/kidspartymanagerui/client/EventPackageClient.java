@@ -15,7 +15,7 @@ public class EventPackageClient {
 
     private final RestClient restClient;
 
-    public List<EventPackageResponseDto> getEventPackages() {
+    public List<EventPackageResponseDto> getAllEventPackages() {
 
         return restClient.get()
                 .uri("/api/v1/event-packages")
