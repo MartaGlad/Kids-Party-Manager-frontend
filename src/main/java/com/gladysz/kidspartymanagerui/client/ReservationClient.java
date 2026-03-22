@@ -1,5 +1,7 @@
 package com.gladysz.kidspartymanagerui.client;
 
+import com.gladysz.kidspartymanagerui.dto.ReservationCreateDto;
+import com.gladysz.kidspartymanagerui.dto.ReservationResponseDto;
 import com.gladysz.kidspartymanagerui.dto.ReservationSummaryDto;
 import com.gladysz.kidspartymanagerui.dto.Status;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,16 @@ public class ReservationClient {
                     return builder.build();
                 })
                 .retrieve()
-                .body(new ParameterizedTypeReference<List<ReservationSummaryDto>>(){});
+                .body(new ParameterizedTypeReference<List<ReservationSummaryDto>>() {});
+    }
+
+
+    public void createReservation(ReservationCreateDto reservationCreateDto) {
+
+        restClient.post()
+                .uri("/api/v1/reservations")
+                .body(reservationCreateDto)
+                .retrieve()
+                .body(ReservationResponseDto.class);
     }
 }
