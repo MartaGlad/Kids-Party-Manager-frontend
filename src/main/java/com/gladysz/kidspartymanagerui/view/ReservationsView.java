@@ -72,100 +72,7 @@ public class ReservationsView extends VerticalLayout {
                 .set("font-size", "30px")
                 .set("font-weight", "bold");
 
-
-        Button addReservation = new Button("Add reservation", e -> {
-
-            Dialog dialog = new Dialog();
-            dialog.setHeaderTitle("Add reservation");
-
-            IntegerField childrenCountField = new IntegerField("Children count");
-            IntegerField birthdayChildAgeField = new IntegerField("Birthday child age");
-
-            DatePicker eventDateField = new DatePicker("Event date");
-            TimePicker eventTimeField = new TimePicker("Event time");
-
-            ComboBox<EventPackageResponseDto> packageComboBox = new ComboBox<>("Event package");
-            packageComboBox.setItems(eventPackageService.getEventPackages());
-            packageComboBox.setItemLabelGenerator(EventPackageResponseDto::name);
-
-            ComboBox<AnimatorResponseDto> animatorComboBox = new ComboBox<>("Animator");
-            animatorComboBox.setItems(animatorService.getAnimators().stream()
-                    .filter(AnimatorResponseDto::active)
-                    .collect(Collectors.toList()));
-
-            animatorComboBox.setItemLabelGenerator(a -> a.firstName() + " " + a.lastName());
-
-            ComboBox<OrdererResponseDto> ordererComboBox = new ComboBox<>("Orderer");
-            ordererComboBox.setItems(ordererService.getOrderers());
-
-            ordererComboBox.setItemLabelGenerator(o -> o.firstName() + " " + o.lastName());
-
-            VerticalLayout dialogLayout = new VerticalLayout(
-                    packageComboBox, animatorComboBox, ordererComboBox,
-                    childrenCountField, birthdayChildAgeField,
-                    eventDateField, eventTimeField);
-
-            dialog.add(dialogLayout);
-
-            Button saveButton = new Button("Save", ev -> {
-
-                if (packageComboBox.getValue() == null) {
-                    Notification.show("Please choose event package.");
-                    return;
-                }
-
-                if (animatorComboBox.getValue() == null) {
-                    Notification.show("Please choose animator.");
-                    return;
-                }
-
-                if (ordererComboBox.getValue() == null) {
-                    Notification.show("Please choose orderer.");
-                    return;
-                }
-
-                if (childrenCountField.getValue() == null) {
-                    Notification.show("Please enter children count.");
-                    return;
-                }
-
-                if (birthdayChildAgeField.getValue() == null) {
-                    Notification.show("Please enter birthday child age.");
-                    return;
-                }
-
-                if (eventDateField.getValue() == null) {
-                    Notification.show("Please enter event date.");
-                    return;
-                }
-
-                if (eventTimeField.getValue() == null) {
-                    Notification.show("Please enter event time");
-                    return;
-                }
-
-                LocalDateTime eventDateTime = LocalDateTime.of(eventDateField.getValue(), eventTimeField.getValue());
-
-                reservationService.createReservation(new ReservationCreateDto(
-                        packageComboBox.getValue().id(), animatorComboBox.getValue().id(),
-                        ordererComboBox.getValue().id(), eventDateTime,
-                        childrenCountField.getValue(), birthdayChildAgeField.getValue()));
-
-                Notification.show("Reservation created");
-
-                dialog.close();
-
-                grid.setItems(reservationService.getReservations(null, null, null));
-            }
-            );
-
-            Button cancelButton = new Button("Cancel", ev -> dialog.close());
-
-            dialog.getFooter().add(saveButton);
-            dialog.getFooter().add(cancelButton);
-            dialog.open();
-        });
-
+        Button addReservation = new Button("Add reservation", e -> showAddReservationDialog());
 
         header.add(title, addReservation);
 
@@ -191,7 +98,7 @@ public class ReservationsView extends VerticalLayout {
             statusFilter.clear();
             fromFilter.clear();
             toFilter.clear();
-            grid.setItems(reservationService.getReservations(null, null, null));
+            refreshGrid();
         });
 
         panel.add(statusFilter, fromFilter, toFilter, searchButton, clearButton);
@@ -227,7 +134,7 @@ public class ReservationsView extends VerticalLayout {
                 currencyFormatter.format(item.price()))
                 .setHeader("Price");
 
-        grid.setItems(reservationService.getReservations(null, null, null));
+        refreshGrid();
         grid.setAllRowsVisible(true);
         grid.setEmptyStateText("No reservations found.");
 
@@ -235,5 +142,120 @@ public class ReservationsView extends VerticalLayout {
 
         add(mainContent);
     }
+
+
+    private void showAddReservationDialog() {
+
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Add reservation");
+
+        IntegerField childrenCountField = new IntegerField("Children count");
+        IntegerField birthdayChildAgeField = new IntegerField("Birthday child age");
+
+        DatePicker eventDateField = new DatePicker("Event date");
+        TimePicker eventTimeField = new TimePicker("Event time");
+
+        ComboBox<EventPackageResponseDto> packageComboBox = new ComboBox<>("Event package");
+        packageComboBox.setItems(eventPackageService.getEventPackages());
+        packageComboBox.setItemLabelGenerator(EventPackageResponseDto::name);
+
+        ComboBox<AnimatorResponseDto> animatorComboBox = new ComboBox<>("Animator");
+        animatorComboBox.setItems(animatorService.getAnimators().stream()
+                .filter(AnimatorResponseDto::active)
+                .collect(Collectors.toList()));
+
+        animatorComboBox.setItemLabelGenerator(a -> a.firstName() + " " + a.lastName());
+
+        ComboBox<OrdererResponseDto> ordererComboBox = new ComboBox<>("Orderer");
+        ordererComboBox.setItems(ordererService.getOrderers());
+
+        ordererComboBox.setItemLabelGenerator(o -> o.firstName() + " " + o.lastName());
+
+        VerticalLayout dialogLayout = new VerticalLayout(
+                packageComboBox, animatorComboBox, ordererComboBox,
+                childrenCountField, birthdayChildAgeField,
+                eventDateField, eventTimeField);
+
+        dialog.add(dialogLayout);
+
+        Button saveButton = new Button("Save", ev -> {
+
+            if(!validateInput(childrenCountField, birthdayChildAgeField, eventDateField, eventTimeField,
+                    packageComboBox, animatorComboBox, ordererComboBox)) {
+                return;
+            }
+
+            LocalDateTime eventDateTime = LocalDateTime.of(eventDateField.getValue(), eventTimeField.getValue());
+
+            reservationService.createReservation(new ReservationCreateDto(
+                    packageComboBox.getValue().id(), animatorComboBox.getValue().id(),
+                    ordererComboBox.getValue().id(), eventDateTime,
+                    childrenCountField.getValue(), birthdayChildAgeField.getValue()));
+
+            Notification.show("Reservation created");
+
+            dialog.close();
+
+            refreshGrid();
+        }
+        );
+
+        Button cancelButton = new Button("Cancel", ev -> dialog.close());
+
+        dialog.getFooter().add(saveButton);
+        dialog.getFooter().add(cancelButton);
+        dialog.open();
+    }
+
+
+    private void refreshGrid() {
+        grid.setItems(reservationService.getReservations(null, null, null));
+    }
+
+
+    private boolean validateInput (IntegerField childrenCountField, IntegerField birthdayChildAgeField,
+                                   DatePicker eventDateField, TimePicker eventTimeField,
+                                   ComboBox<EventPackageResponseDto> packageComboBox,
+                                   ComboBox<AnimatorResponseDto> animatorComboBox,
+                                   ComboBox<OrdererResponseDto> ordererComboBox
+                                   ) {
+
+        if (packageComboBox.getValue() == null) {
+            Notification.show("Please choose event package.");
+            return false;
+        }
+
+        if (animatorComboBox.getValue() == null) {
+            Notification.show("Please choose animator.");
+            return false;
+        }
+
+        if (ordererComboBox.getValue() == null) {
+            Notification.show("Please choose orderer.");
+            return false;
+        }
+
+        if (childrenCountField.getValue() == null) {
+            Notification.show("Please enter children count.");
+            return false;
+        }
+
+        if (birthdayChildAgeField.getValue() == null) {
+            Notification.show("Please enter birthday child age.");
+            return false;
+        }
+
+        if (eventDateField.getValue() == null) {
+            Notification.show("Please enter event date.");
+            return false;
+        }
+
+        if (eventTimeField.getValue() == null) {
+            Notification.show("Please enter event time");
+            return false;
+        }
+        return true;
+    }
 }
+
 
