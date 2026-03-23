@@ -33,4 +33,14 @@ public class EventPackageClient {
                 .retrieve()
                 .body(EventPackageResponseDto.class);
     }
+
+
+    public EventPackageResponseDto updateEventPackage(Long id, EventPackageCreateDto eventPackageCreateDto) {
+
+        return restClient.put()
+                .uri("/api/v1/event-packages/{id}", id)
+                .body(eventPackageCreateDto)
+                .retrieve()
+                .body(EventPackageResponseDto.class);
+    }
 }

@@ -24,4 +24,10 @@ public class EventPackageService {
 
         return eventPackageClient.createEventPackage(eventPackageCreateDto);
     }
+
+
+    public EventPackageResponseDto updateEventPackage(Long id, EventPackageCreateDto eventPackageCreateDto) {
+
+        return eventPackageClient.updateEventPackage(id, eventPackageCreateDto);
+    }
 }

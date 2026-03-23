@@ -81,8 +81,13 @@ public class EventPackagesView extends VerticalLayout {
         grid.addColumn(item ->
                 currencyFormatter.format(item.basePrice())).setHeader("Base price");
 
-        grid.addColumn(EventPackageResponseDto::maxChildrenCount).setHeader("Maximum number of children");
-        grid.addColumn(EventPackageResponseDto::durationHr).setHeader("Duration hours");
+        grid.addColumn(EventPackageResponseDto::maxChildrenCount)
+                .setHeader("Max children");
+        grid.addColumn(EventPackageResponseDto::durationHr).setHeader("Duration (h)");
+
+        grid.addComponentColumn(item -> new Button("Edit",
+                        e -> showEditEventPackageDialog(item)))
+                .setHeader("Edit data");
 
         refreshGrid();
         grid.setAllRowsVisible(true);
@@ -167,7 +172,7 @@ public class EventPackagesView extends VerticalLayout {
     }
 
 
-    private boolean validateInput (TextField nameField, TextField descriptionField,
+    private boolean validateInput(TextField nameField, TextField descriptionField,
                                    TextField priceField, IntegerField maxChildrenCountField,
                                    IntegerField durationInHrField
     ) {
@@ -226,5 +231,63 @@ public class EventPackagesView extends VerticalLayout {
         }
 
         return true;
+    }
+
+
+    private void showEditEventPackageDialog(EventPackageResponseDto eventPackageResponseDto) {
+
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Edit event package");
+        dialog.setDraggable(true);
+
+        TextField nameField = new TextField("Name");
+        nameField.setValue(eventPackageResponseDto.name());
+
+        TextField descriptionField = new TextField("Description");
+        descriptionField.setValue(eventPackageResponseDto.description());
+
+        TextField priceField = new TextField("Price");
+        priceField.setValue(eventPackageResponseDto.basePrice().toString());
+
+        IntegerField maxChildrenCountField = new IntegerField("Maximum number of children");
+        maxChildrenCountField.setValue(eventPackageResponseDto.maxChildrenCount());
+
+        IntegerField durationInHrField = new IntegerField("Duration hours");
+        durationInHrField.setValue(eventPackageResponseDto.durationHr());
+
+        VerticalLayout dialogLayout = new VerticalLayout(
+                nameField, descriptionField, priceField,
+                maxChildrenCountField, durationInHrField);
+
+        dialog.add(dialogLayout);
+
+        Button saveButton = new Button("Save", ev -> {
+
+            if (!validateInput(nameField, descriptionField, priceField, maxChildrenCountField, durationInHrField)) {
+                return;
+            }
+            try {
+                eventPackageService.updateEventPackage(eventPackageResponseDto.id(),
+                        new EventPackageCreateDto(
+                        nameField.getValue(), descriptionField.getValue(),
+                        new BigDecimal(priceField.getValue()),
+                        maxChildrenCountField.getValue(), durationInHrField.getValue())
+                );
+                Notification.show("Event package updated.");
+                dialog.close();
+                refreshGrid();
+
+            } catch (Exception e) {
+                Notification.show("Could not update event package.");
+                LOGGER.error("Could not update event package ", e);
+            }
+        }
+        );
+
+        Button cancelButton = new Button("Cancel", ev -> dialog.close());
+
+        dialog.getFooter().add(saveButton);
+        dialog.getFooter().add(cancelButton);
+        dialog.open();
     }
 }
