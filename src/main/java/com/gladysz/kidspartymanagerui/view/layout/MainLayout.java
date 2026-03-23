@@ -2,7 +2,7 @@ package com.gladysz.kidspartymanagerui.view.layout;
 
 import com.gladysz.kidspartymanagerui.view.AnimatorsView;
 import com.gladysz.kidspartymanagerui.view.DashboardView;
-import com.gladysz.kidspartymanagerui.view.PackagesView;
+import com.gladysz.kidspartymanagerui.view.EventPackagesView;
 import com.gladysz.kidspartymanagerui.view.ReservationsView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -44,7 +44,7 @@ public class MainLayout extends AppLayout {
         drawer.add(
                 new RouterLink("Dashboard", DashboardView.class),
                 new RouterLink("Animators", AnimatorsView.class),
-                new RouterLink("Packages", PackagesView.class),
+                new RouterLink("Event packages", EventPackagesView.class),
                 new RouterLink("Reservations", ReservationsView.class)
         );
         drawer.getStyle().set("margin", "var(--vaadin-gap-s)");

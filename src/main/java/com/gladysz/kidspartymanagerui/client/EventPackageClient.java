@@ -1,5 +1,6 @@
 package com.gladysz.kidspartymanagerui.client;
 
+import com.gladysz.kidspartymanagerui.dto.EventPackageCreateDto;
 import com.gladysz.kidspartymanagerui.dto.EventPackageResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,5 +22,15 @@ public class EventPackageClient {
                 .uri("/api/v1/event-packages")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<EventPackageResponseDto>>() {});
+    }
+
+
+    public EventPackageResponseDto createEventPackage(EventPackageCreateDto eventPackageCreateDto) {
+
+        return restClient.post()
+                .uri("/api/v1/event-packages")
+                .body(eventPackageCreateDto)
+                .retrieve()
+                .body(EventPackageResponseDto.class);
     }
 }
