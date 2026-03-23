@@ -8,6 +8,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -38,7 +39,6 @@ public class EventPackagesView extends VerticalLayout {
         this.eventPackageService = eventPackageService;
 
         frameHeader();
-        frameControlPanel();
         frameMainContent();
     }
 
@@ -89,6 +89,10 @@ public class EventPackagesView extends VerticalLayout {
                         e -> showEditEventPackageDialog(item)))
                 .setHeader("Edit data");
 
+        grid.addComponentColumn(item -> new Button("Delete",
+                        ev -> showDeleteConfirmationDialog(item)))
+                .setHeader("Delete data");
+
         refreshGrid();
         grid.setAllRowsVisible(true);
         grid.setEmptyStateText("No event packages found.");
@@ -96,6 +100,35 @@ public class EventPackagesView extends VerticalLayout {
         mainContent.add(grid);
 
         add(mainContent);
+    }
+
+
+    private void showDeleteConfirmationDialog(EventPackageResponseDto item) {
+
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Confirm deletion");
+        dialog.setDraggable(true);
+
+        Span ask = new Span("Do you really want to delete package: " + item.name() + "?");
+
+        VerticalLayout dialogLayout = new VerticalLayout(ask);
+        dialog.add(dialogLayout);
+
+        Button cancelButton = new Button("Cancel", e -> dialog.close());
+
+        Button deleteButton = new Button("Delete", ev -> {
+            try {
+                eventPackageService.deleteEventPackage(item.id());
+                Notification.show("Event package deleted.");
+                dialog.close();
+                refreshGrid();
+            } catch (Exception e) {
+                Notification.show("Could not delete event package.");
+                LOGGER.error("Could not delete event package ", e);
+            }
+        });
+        dialog.getFooter().add(cancelButton, deleteButton);
+        dialog.open();
     }
 
 
@@ -109,8 +142,6 @@ public class EventPackagesView extends VerticalLayout {
         }
     }
 
-    private void frameControlPanel() {
-    }
 
     private void showAddEventPackageDialog() {
 

@@ -43,4 +43,13 @@ public class EventPackageClient {
                 .retrieve()
                 .body(EventPackageResponseDto.class);
     }
+
+
+    public void deleteEventPackage(Long id) {
+
+        restClient.delete()
+                .uri("/api/v1/event-packages/{id}", id)
+                .retrieve()
+                .toBodilessEntity();
+    }
 }

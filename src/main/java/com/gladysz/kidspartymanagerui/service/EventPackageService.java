@@ -30,4 +30,10 @@ public class EventPackageService {
 
         return eventPackageClient.updateEventPackage(id, eventPackageCreateDto);
     }
+
+
+    public void deleteEventPackage(Long id) {
+
+        eventPackageClient.deleteEventPackage(id);
+    }
 }
