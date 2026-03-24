@@ -173,7 +173,7 @@ public class ReservationsView extends VerticalLayout {
         packageComboBox.setItemLabelGenerator(EventPackageResponseDto::name);
 
         ComboBox<AnimatorResponseDto> animatorComboBox = new ComboBox<>("Animator");
-        animatorComboBox.setItems(animatorService.getAnimators().stream()
+        animatorComboBox.setItems(animatorService.getAllAnimators().stream()
                 .filter(AnimatorResponseDto::active)
                 .collect(Collectors.toList()));
 

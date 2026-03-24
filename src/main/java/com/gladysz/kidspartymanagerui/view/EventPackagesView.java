@@ -43,7 +43,7 @@ public class EventPackagesView extends VerticalLayout {
     }
 
 
-    public void frameHeader() {
+    private void frameHeader() {
 
         HorizontalLayout header = new HorizontalLayout();
         header.setWidthFull();
@@ -65,7 +65,7 @@ public class EventPackagesView extends VerticalLayout {
     }
 
 
-    public void frameMainContent() {
+    private void frameMainContent() {
 
         Div mainContent = new Div();
         mainContent.setSizeFull();
@@ -87,11 +87,11 @@ public class EventPackagesView extends VerticalLayout {
 
         grid.addComponentColumn(item -> new Button("Edit",
                         e -> showEditEventPackageDialog(item)))
-                .setHeader("Edit data");
+                .setHeader("Edit");
 
         grid.addComponentColumn(item -> new Button("Delete",
                         ev -> showDeleteConfirmationDialog(item)))
-                .setHeader("Delete data");
+                .setHeader("Delete");
 
         refreshGrid();
         grid.setAllRowsVisible(true);
@@ -237,7 +237,7 @@ public class EventPackagesView extends VerticalLayout {
         }
 
         if (new BigDecimal(priceField.getValue()).compareTo(BigDecimal.valueOf(500.00)) < 0) {
-            Notification.show("Base price must be at least 500.00 zl.");
+            Notification.show("Base price must be at least 500.00 PLN.");
             return false;
         }
 
@@ -273,18 +273,25 @@ public class EventPackagesView extends VerticalLayout {
 
         TextField nameField = new TextField("Name");
         nameField.setValue(eventPackageResponseDto.name());
+        nameField.setRequired(true);
 
         TextField descriptionField = new TextField("Description");
         descriptionField.setValue(eventPackageResponseDto.description());
+        nameField.setRequired(true);
 
         TextField priceField = new TextField("Price");
         priceField.setValue(eventPackageResponseDto.basePrice().toString());
+        priceField.setRequired(true);
 
         IntegerField maxChildrenCountField = new IntegerField("Maximum number of children");
         maxChildrenCountField.setValue(eventPackageResponseDto.maxChildrenCount());
+        maxChildrenCountField.setRequired(true);
+        maxChildrenCountField.setMin(1);
 
         IntegerField durationInHrField = new IntegerField("Duration hours");
         durationInHrField.setValue(eventPackageResponseDto.durationHr());
+        durationInHrField.setRequired(true);
+        durationInHrField.setMin(1);
 
         VerticalLayout dialogLayout = new VerticalLayout(
                 nameField, descriptionField, priceField,
