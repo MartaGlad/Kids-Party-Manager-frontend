@@ -180,7 +180,7 @@ public class ReservationsView extends VerticalLayout {
         animatorComboBox.setItemLabelGenerator(a -> a.firstName() + " " + a.lastName());
 
         ComboBox<OrdererResponseDto> ordererComboBox = new ComboBox<>("Orderer");
-        ordererComboBox.setItems(ordererService.getOrderers());
+        ordererComboBox.setItems(ordererService.getAllOrderers());
 
         ordererComboBox.setItemLabelGenerator(o -> o.firstName() + " " + o.lastName());
 

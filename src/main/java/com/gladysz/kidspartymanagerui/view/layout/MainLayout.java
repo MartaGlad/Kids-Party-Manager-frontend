@@ -1,9 +1,6 @@
 package com.gladysz.kidspartymanagerui.view.layout;
 
-import com.gladysz.kidspartymanagerui.view.AnimatorsView;
-import com.gladysz.kidspartymanagerui.view.DashboardView;
-import com.gladysz.kidspartymanagerui.view.EventPackagesView;
-import com.gladysz.kidspartymanagerui.view.ReservationsView;
+import com.gladysz.kidspartymanagerui.view.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
@@ -44,6 +41,7 @@ public class MainLayout extends AppLayout {
         drawer.add(
                 new RouterLink("Dashboard", DashboardView.class),
                 new RouterLink("Animators", AnimatorsView.class),
+                new RouterLink("Orderers", OrderersView.class),
                 new RouterLink("Event packages", EventPackagesView.class),
                 new RouterLink("Reservations", ReservationsView.class)
         );
