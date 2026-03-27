@@ -1,6 +1,7 @@
 package com.gladysz.kidspartymanagerui.view;
 
 import com.gladysz.kidspartymanagerui.dto.AnimatorCreateDto;
+import com.gladysz.kidspartymanagerui.dto.AnimatorRatingResponseDto;
 import com.gladysz.kidspartymanagerui.dto.AnimatorResponseDto;
 import com.gladysz.kidspartymanagerui.service.AnimatorService;
 import com.gladysz.kidspartymanagerui.view.layout.MainLayout;
@@ -19,6 +20,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @PageTitle("Animators")
 @Route(layout = MainLayout.class)
@@ -70,9 +75,30 @@ public class AnimatorsView extends VerticalLayout {
         grid.addColumn(AnimatorResponseDto::id).setHeader("Animator ID");
         grid.addColumn(AnimatorResponseDto::firstName).setHeader("First name");
         grid.addColumn(AnimatorResponseDto::lastName).setHeader("Last name");
-        grid.addColumn(AnimatorResponseDto::email).setHeader("Email");
-        grid.addColumn(AnimatorResponseDto::phone).setHeader("Phone");
+        grid.addColumn(AnimatorResponseDto::email).setHeader("Email").setAutoWidth(true).setFlexGrow(0);
+        grid.addColumn(AnimatorResponseDto::phone).setHeader("Phone").setAutoWidth(true).setFlexGrow(0);
         grid.addColumn(AnimatorResponseDto::active).setHeader("Active");
+
+        List<AnimatorRatingResponseDto> ratings;
+        Map<Long, AnimatorRatingResponseDto> ratingsMap = new HashMap<>();
+
+        try {
+            ratings = animatorService.getAllAnimatorsRatings();
+            for (AnimatorRatingResponseDto dto : ratings) {
+                ratingsMap.put(dto.animatorId(), dto);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Could not load ratings ", e);
+        }
+
+        grid.addColumn (item -> {
+            AnimatorRatingResponseDto dto = ratingsMap.get(item.id());
+            if (dto == null || dto.ratingsCount() == 0) {
+                return "No ratings";
+            }
+            return String.format("%.1f ⭐", ratingsMap.get(item.id()).averageRating());
+
+        }).setHeader("Average rating").setAutoWidth(true);
 
         grid.addComponentColumn(item -> new Button("Edit",
                         e -> showEditAnimatorDialog(item)))

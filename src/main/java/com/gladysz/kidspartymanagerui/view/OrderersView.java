@@ -70,8 +70,8 @@ public class OrderersView extends VerticalLayout {
         grid.addColumn(OrdererResponseDto::id).setHeader("Orderer ID");
         grid.addColumn(OrdererResponseDto::firstName).setHeader("First name");
         grid.addColumn(OrdererResponseDto::lastName).setHeader("Last name");
-        grid.addColumn(OrdererResponseDto::email).setHeader("Email");
-        grid.addColumn(OrdererResponseDto::phone).setHeader("Phone");
+        grid.addColumn(OrdererResponseDto::email).setHeader("Email").setAutoWidth(true).setFlexGrow(0);
+        grid.addColumn(OrdererResponseDto::phone).setHeader("Phone").setAutoWidth(true).setFlexGrow(0);
 
         grid.addComponentColumn(item -> new Button("Edit",
                         e -> showEditOrdererDialog(item)))

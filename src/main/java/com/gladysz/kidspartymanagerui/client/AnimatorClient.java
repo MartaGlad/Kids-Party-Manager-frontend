@@ -1,6 +1,7 @@
 package com.gladysz.kidspartymanagerui.client;
 
 import com.gladysz.kidspartymanagerui.dto.AnimatorCreateDto;
+import com.gladysz.kidspartymanagerui.dto.AnimatorRatingResponseDto;
 import com.gladysz.kidspartymanagerui.dto.AnimatorResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,7 +21,7 @@ public class AnimatorClient {
         return restClient.get()
                 .uri("/api/v1/animators")
                 .retrieve()
-                .body(new ParameterizedTypeReference<List<AnimatorResponseDto>>() {});
+                .body(new ParameterizedTypeReference<List<AnimatorResponseDto>>(){});
     }
 
 
@@ -50,5 +51,14 @@ public class AnimatorClient {
                 .uri("/api/v1/animators/{id}", id)
                 .retrieve()
                 .toBodilessEntity();
+    }
+
+
+    public List<AnimatorRatingResponseDto> getAllAnimatorsRating() {
+
+        return restClient.get()
+                .uri("/api/v1/animators/ratings")
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<AnimatorRatingResponseDto>>(){});
     }
 }

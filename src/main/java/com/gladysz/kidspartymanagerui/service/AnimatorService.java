@@ -2,6 +2,7 @@ package com.gladysz.kidspartymanagerui.service;
 
 import com.gladysz.kidspartymanagerui.client.AnimatorClient;
 import com.gladysz.kidspartymanagerui.dto.AnimatorCreateDto;
+import com.gladysz.kidspartymanagerui.dto.AnimatorRatingResponseDto;
 import com.gladysz.kidspartymanagerui.dto.AnimatorResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,11 @@ public class AnimatorService {
     public void deleteAnimator(Long id) {
 
         animatorClient.deleteAnimator(id);
+    }
+
+
+    public List<AnimatorRatingResponseDto> getAllAnimatorsRatings() {
+
+        return animatorClient.getAllAnimatorsRating();
     }
 }
