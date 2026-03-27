@@ -7,7 +7,11 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainLayout extends AppLayout {
@@ -38,14 +42,26 @@ public class MainLayout extends AppLayout {
     private void frameDrawer() {
 
         VerticalLayout drawer = new VerticalLayout();
-        drawer.add(
-                new RouterLink("Dashboard", DashboardView.class),
-                new RouterLink("Animators", AnimatorsView.class),
-                new RouterLink("Orderers", OrderersView.class),
-                new RouterLink("Event packages", EventPackagesView.class),
-                new RouterLink("Reservations", ReservationsView.class)
-        );
-        drawer.getStyle().set("margin", "var(--vaadin-gap-s)");
+        
+        RouterLink dashboard = new RouterLink("Dashboard", DashboardView.class);
+        RouterLink animators = new RouterLink("Animators", AnimatorsView.class);
+        RouterLink orderers = new RouterLink("Orderers", OrderersView.class);
+        RouterLink eventPackages = new RouterLink("Event packages", EventPackagesView.class);
+        RouterLink reservations = new RouterLink("Reservations", ReservationsView.class);
+
+        List<RouterLink> links = Arrays.asList(dashboard, animators, orderers, eventPackages, reservations);
+
+        for (RouterLink link : links) {
+            link.getStyle()
+                    .set("display", "block")
+                    .set("padding", "12px")
+                    .setFontSize("20px")
+                    .setFontWeight("bold")
+                    .set("color", "#333");
+        }
+
+        drawer.add(dashboard, animators, orderers, eventPackages, reservations);
+
         addToDrawer(drawer);
     }
 }
