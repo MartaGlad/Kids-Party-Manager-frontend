@@ -14,7 +14,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -69,8 +69,8 @@ public class ReservationsView extends VerticalLayout {
 
         HorizontalLayout header = new HorizontalLayout();
         header.setWidthFull();
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.setAlignItems(FlexComponent.Alignment.CENTER);
+        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        header.setAlignItems(Alignment.CENTER);
 
         H1 title = new H1("Reservations");
         title.getStyle()
@@ -132,7 +132,20 @@ public class ReservationsView extends VerticalLayout {
                 .setHeader("Event date");
 
         grid.addColumn(ReservationSummaryDto::childrenCount).setHeader("Children count");
-        grid.addColumn(ReservationSummaryDto::status).setHeader("Status");
+
+        grid.addComponentColumn(item -> {
+            String color = switch (item.status()) {
+                case NEW -> "gold";
+                case CONFIRMED -> "cornflowerblue";
+                case COMPLETED -> "limegreen";
+                case CANCELLED -> "tomato";
+            };
+            Span span  = new Span(item.status().name());
+            span.getStyle()
+                    .setFontWeight("bold")
+                    .set("color", color);
+            return span;
+        }).setHeader("Status");
 
         NumberFormat currencyFormatter = NumberFormat
                 .getCurrencyInstance(Locale.of("pl","PL"));
