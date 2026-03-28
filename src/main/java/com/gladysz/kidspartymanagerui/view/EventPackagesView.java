@@ -52,7 +52,6 @@ public class EventPackagesView extends VerticalLayout {
 
         H1 title = new H1("Event packages");
         title.getStyle()
-                .set("text-align", "center")
                 .set("font-size", "30px")
                 .set("font-weight", "bold");
 
@@ -74,7 +73,12 @@ public class EventPackagesView extends VerticalLayout {
 
         grid.addColumn(EventPackageResponseDto::id).setHeader("Event package ID");
         grid.addColumn(EventPackageResponseDto::name).setHeader("Name");
-        grid.addColumn(EventPackageResponseDto::description).setHeader("Description");
+
+        grid.addComponentColumn(item -> {
+            Span span = new Span(item.description());
+            span.getElement().setProperty("title", item.description());
+            return span;
+        }).setHeader("Description");
 
         NumberFormat currencyFormatter = NumberFormat
                 .getCurrencyInstance(Locale.of("pl","PL"));

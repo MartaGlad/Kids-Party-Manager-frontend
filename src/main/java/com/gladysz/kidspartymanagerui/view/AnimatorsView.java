@@ -52,7 +52,6 @@ public class AnimatorsView extends VerticalLayout {
 
         H1 title = new H1("Animators");
         title.getStyle()
-                .set("text-align", "center")
                 .set("font-size", "30px")
                 .set("font-weight", "bold");
 

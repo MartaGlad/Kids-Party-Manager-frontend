@@ -6,4 +6,4 @@ public record EventPackageResponseDto(
         Long id, String name, String description,
         BigDecimal basePrice,
         int maxChildrenCount, int durationHr
-) {}
+){}

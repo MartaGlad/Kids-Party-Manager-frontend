@@ -74,7 +74,6 @@ public class ReservationsView extends VerticalLayout {
 
         H1 title = new H1("Reservations");
         title.getStyle()
-                .set("text-align", "center")
                 .set("font-size", "30px")
                 .set("font-weight", "bold");
 
@@ -171,19 +170,25 @@ public class ReservationsView extends VerticalLayout {
         dialog.setDraggable(true);
 
         IntegerField childrenCountField = new IntegerField("Children count");
+        childrenCountField.setRequired(true);
+
         IntegerField birthdayChildAgeField = new IntegerField("Birthday child age");
+        birthdayChildAgeField.setRequired(true);
 
         DatePicker eventDateField = new DatePicker("Event date");
         eventDateField.setMin(LocalDate.now());
+        eventDateField.setRequired(true);
 
         TimePicker eventTimeField = new TimePicker("Event time");
         eventTimeField.setMin(LocalTime.of(8,0));
         eventTimeField.setMax(LocalTime.of(22,0));
         eventTimeField.setStep(Duration.ofMinutes(30));
+        eventTimeField.setRequired(true);
 
         ComboBox<EventPackageResponseDto> packageComboBox = new ComboBox<>("Event package");
         packageComboBox.setItems(eventPackageService.getAllEventPackages());
         packageComboBox.setItemLabelGenerator(EventPackageResponseDto::name);
+        packageComboBox.setRequired(true);
 
         ComboBox<AnimatorResponseDto> animatorComboBox = new ComboBox<>("Animator");
         animatorComboBox.setItems(animatorService.getAllAnimators().stream()
@@ -191,11 +196,13 @@ public class ReservationsView extends VerticalLayout {
                 .collect(Collectors.toList()));
 
         animatorComboBox.setItemLabelGenerator(a -> a.firstName() + " " + a.lastName());
+        animatorComboBox.setRequired(true);
 
         ComboBox<OrdererResponseDto> ordererComboBox = new ComboBox<>("Orderer");
         ordererComboBox.setItems(ordererService.getAllOrderers());
 
         ordererComboBox.setItemLabelGenerator(o -> o.firstName() + " " + o.lastName());
+        ordererComboBox.setRequired(true);
 
         VerticalLayout dialogLayout = new VerticalLayout(
                 packageComboBox, animatorComboBox, ordererComboBox,
@@ -253,7 +260,7 @@ public class ReservationsView extends VerticalLayout {
                                    ComboBox<EventPackageResponseDto> packageComboBox,
                                    ComboBox<AnimatorResponseDto> animatorComboBox,
                                    ComboBox<OrdererResponseDto> ordererComboBox
-                                   ) {
+    ) {
 
         if (packageComboBox.getValue() == null) {
             Notification.show("Please choose event package.");
@@ -275,8 +282,8 @@ public class ReservationsView extends VerticalLayout {
             return false;
         }
 
-        if (childrenCountField.getValue() <= 0) {
-            Notification.show("Children count must be greater than 0.");
+        if (childrenCountField.getValue() <= 0 || childrenCountField.getValue() > 20) {
+            Notification.show("Children count must be between 1 and 20.");
             return false;
         }
 

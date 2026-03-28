@@ -7,7 +7,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 
 import java.util.Arrays;
@@ -28,8 +27,8 @@ public class MainLayout extends AppLayout {
         H1 title = new H1("Kids Party Manager");
         title.getStyle()
                 .set("font-size", "1.125rem")
-                .set("font-weight", "bold")
-                .set("margin", "0");
+                .set("font-weight", "bold");
+
 
         HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), title);
         header.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -48,19 +47,21 @@ public class MainLayout extends AppLayout {
         RouterLink orderers = new RouterLink("Orderers", OrderersView.class);
         RouterLink eventPackages = new RouterLink("Event packages", EventPackagesView.class);
         RouterLink reservations = new RouterLink("Reservations", ReservationsView.class);
+        RouterLink pricing = new RouterLink("Pricing preview", PricingView.class);
 
-        List<RouterLink> links = Arrays.asList(dashboard, animators, orderers, eventPackages, reservations);
+        List<RouterLink> links = Arrays.asList(
+                dashboard, animators, orderers,
+                eventPackages, reservations, pricing);
 
         for (RouterLink link : links) {
             link.getStyle()
-                    .set("display", "block")
                     .set("padding", "12px")
                     .setFontSize("20px")
                     .setFontWeight("bold")
                     .set("color", "#333");
         }
 
-        drawer.add(dashboard, animators, orderers, eventPackages, reservations);
+        drawer.add(dashboard, animators, orderers, eventPackages, reservations, pricing);
 
         addToDrawer(drawer);
     }

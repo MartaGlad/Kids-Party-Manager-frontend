@@ -47,7 +47,6 @@ public class OrderersView extends VerticalLayout {
 
         H1 title = new H1("Orderers");
         title.getStyle()
-                .set("text-align", "center")
                 .set("font-size", "30px")
                 .set("font-weight", "bold");
 
