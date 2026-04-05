@@ -165,6 +165,7 @@ public class EventPackagesView extends VerticalLayout {
         IntegerField maxChildrenCountField = new IntegerField("Maximum number of children");
         maxChildrenCountField.setRequired(true);
         maxChildrenCountField.setMin(1);
+        maxChildrenCountField.setMax(20);
 
         IntegerField durationInHrField = new IntegerField("Duration hours");
         durationInHrField.setRequired(true);
@@ -250,8 +251,8 @@ public class EventPackagesView extends VerticalLayout {
             return false;
         }
 
-        if (maxChildrenCountField.getValue() < 1) {
-            Notification.show("Maximum number of children must be greater than 0.");
+        if (maxChildrenCountField.getValue() <= 0 || maxChildrenCountField.getValue() > 20) {
+            Notification.show("Maximum number of children must be between 1 and 20.");
             return false;
         }
 
